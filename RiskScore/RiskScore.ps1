@@ -11,9 +11,9 @@ function Remove-BomFromFile ($OldPath, $NewPath)
 # Execution starts here --------------------------------------------
 $VerboseFlag=$args[0]
 
-$ResetsBOM = "\TheNetWorks\resetsBOM.txt"
-$ResetsClr = "\TheNetWorks\resets.txt"
-$PatchesInstalled = "\TheNetWorks\Installs.csv"
+$ResetsBOM = "\TheNetWorks\RS-ResetsBOM.txt"
+$ResetsClr = "\TheNetWorks\RS-Resets.txt"
+$PatchesInstalled = "\TheNetWorks\RS-Installs.csv"
 $PatchesTemp = "C:\TheNetWorks\updates.csv"
 
 cd /TheNetWorks
