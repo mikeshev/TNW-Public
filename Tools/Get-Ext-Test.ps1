@@ -178,4 +178,4 @@ function Get-ChromeExtension {
 }
 
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Internet Explorer\Main" -Name "DisableFirstRunCustomize" -Value 2
-Get-ChromeExtension david
+Get-ChromeExtension -Username david
