@@ -147,7 +147,7 @@ function Get-ChromeExtension {
 		if(!(Test-Path -Path $Path))
 		{
 			$ExtensionFolderPath1 = 'AppData\Local\Google\Chrome\User Data\Profile 1\Extensions'
-			$Path = Join-path -path "fileSystem::\\$Computer\C$\Users\$Username" -ChildPath $ExtensionFolderPath
+			$Path = Join-path -path "fileSystem::\\$Computer\C$\Users\$Username" -ChildPath $ExtensionFolderPath1
 		}
                 $Extensions = Get-ChildItem -Path $Path -Directory -ErrorAction SilentlyContinue
 
