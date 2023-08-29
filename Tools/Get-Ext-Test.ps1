@@ -169,7 +169,6 @@ function Get-ChromeExtension {
 		}
 
 		ForEach ($ExtPath in $Paths){
-		  echo $ExtPath
                   Get-Item -Path $ExtPath -ErrorAction SilentlyContinue | ForEach-Object{
                     $Extensions += Get-ChildItem -Path $_ -Directory -ErrorAction SilentlyContinue
                   }
@@ -179,9 +178,10 @@ function Get-ChromeExtension {
             if (-not($null -eq $Extensions)) {
 
                 Foreach ($Extension in $Extensions) {
-                    $Output = Get-ExtensionInfo -Folder $Extension
-                    $Output | Add-Member -MemberType NoteProperty -Name 'Computername' -Value $Computer
-                    $Output
+		    if($Extension.ToString() -ne "Temp"){	# Ignore Temp Directory
+                        $Output = Get-ExtensionInfo -Folder $Extension
+                        $Output | Add-Member -MemberType NoteProperty -Name 'Computername' -Value $Computer
+                        $Output}
                 }
 
             } else {
