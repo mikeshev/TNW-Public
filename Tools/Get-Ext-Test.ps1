@@ -135,30 +135,45 @@ function Get-ChromeExtension {
         }#End function
         #ENDREGION -----
 
-        $ExtensionFolderPath = 'AppData\Local\Google\Chrome\User Data\Default\Extensions'
+        $DefaultExtPath = 'AppData\Local\Google\Chrome\User Data\Default\Extensions'
+	$ProfilesExtPath = 'AppData\Local\Google\Chrome\User Data\Profile "'
     }
 
     PROCESS {
         Foreach ($Computer in $Computername) {
+	    $Paths = @()
+            $Extensions =@()
 
-            if ($Username) {
-                # Single userprofile
-                $Path = Join-path -path "fileSystem::\\$Computer\C$\Users\$Username" -ChildPath $ExtensionFolderPath
+            if ($Username) {	# Single userprofile
+                $Path = Join-path -path "fileSystem::\\$Computer\C$\Users\$Username" -ChildPath $DefaultExtPath
 		if(!(Test-Path -Path $Path))
 		{
-			$ExtensionFolderPath1 = 'AppData\Local\Google\Chrome\User Data\Profile 1\Extensions'
+			# Try the alternate Profile x path
 			$Path = Join-path -path "fileSystem::\\$Computer\C$\Users\$Username" -ChildPath $ExtensionFolderPath1
 		}
-                $Extensions = Get-ChildItem -Path $Path -Directory -ErrorAction SilentlyContinue
+		if(Test-Path -Path $Path)	# Check the Path before attempting to Get-ChildItem(s)
+		{
+                    $Extensions = Get-ChildItem -Path $Path -Directory -ErrorAction SilentlyContinue
 
-            } else {
-                # All user profiles that contain this a Chrome extensions folder
-                $Path = Join-path -path "fileSystem::\\$Computer\C$\Users\*" -ChildPath $ExtensionFolderPath
-                $Extensions =@()
-                Get-Item -Path $Path -ErrorAction SilentlyContinue | ForEach-Object{
+		}
+            } else {		# All user profiles (Default & Optional) that contain a Chrome extensions folder
 
+	  	# Get Default user profiles that contain this a Chrome extensions folder
+                $DefaultPath = Join-path -path "fileSystem::\\$Computer\C$\Users\*" -ChildPath $DefaultExtPath
+		$ProfilePath = Join-path -Path "fileSystem::\\$Computer\C$\Users\*" -ChildPath $ProfilesExtPath
+
+		$Paths += $DefaultPath
+
+		Get-ChildItem $ProfilePath -Filter "Profile *" -Directory | %{$_.fullname} | ForEach-Object {
+		    $Paths += $_ + "\Extensions"
+		}
+
+		ForEach ($ExtPath in $Paths){
+		  echo $ExtPath
+                  Get-Item -Path $ExtPath -ErrorAction SilentlyContinue | ForEach-Object{
                     $Extensions += Get-ChildItem -Path $_ -Directory -ErrorAction SilentlyContinue
-                }
+                  }
+		}
             }
 
             if (-not($null -eq $Extensions)) {
@@ -178,4 +193,4 @@ function Get-ChromeExtension {
 }
 
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Internet Explorer\Main" -Name "DisableFirstRunCustomize" -Value 2
-Get-ChromeExtension -Username david
+Get-ChromeExtension
