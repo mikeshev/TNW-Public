@@ -136,7 +136,7 @@ function Get-ChromeExtension {
         #ENDREGION -----
 
         $DefaultExtPath = 'AppData\Local\Google\Chrome\User Data\Default\Extensions'
-	$ProfilesExtPath = 'AppData\Local\Google\Chrome\User Data\Profile "'
+	$ProfilesExtPath = 'AppData\Local\Google\Chrome\User Data\Profile *'
     }
 
     PROCESS {
@@ -160,11 +160,11 @@ function Get-ChromeExtension {
 
 	  	# Get Default user profiles that contain this a Chrome extensions folder
                 $DefaultPath = Join-path -path "fileSystem::\\$Computer\C$\Users\*" -ChildPath $DefaultExtPath
-		$ProfilePath = Join-path -Path "fileSystem::\\$Computer\C$\Users\*" -ChildPath $ProfilesExtPath
+		$ProfilesPath = Join-path -Path "fileSystem::\\$Computer\C$\Users\*" -ChildPath $ProfilesExtPath
 
 		$Paths += $DefaultPath
 
-		Get-ChildItem $ProfilePath -Filter "Profile *" -Directory | %{$_.fullname} | ForEach-Object {
+		Get-ChildItem $ProfilesPath -Filter "Profile *" -Directory | %{$_.fullname} | ForEach-Object {
 		    $Paths += $_ + "\Extensions"
 		}
 
