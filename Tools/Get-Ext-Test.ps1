@@ -193,4 +193,6 @@ function Get-ChromeExtension {
 }
 
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Internet Explorer\Main" -Name "DisableFirstRunCustomize" -Value 2
+Add-Type -Path "C:\Program Files (x86)\Microsoft.NET\Primary Interop Assemblies\microsoft.mshtml.dll"
+
 Get-ChromeExtension
