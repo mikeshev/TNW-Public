@@ -1,7 +1,13 @@
 # TheNetWorks LLC - Pre Qualification script
-# Copyright 2023 TheNetWorks LLC
+# Copyright 2024 TheNetWorks LLC
 # May need to set execution polciy prior to execution
-$PrequalVersion = "1.1"
+
+param (
+    [string]$AvMode = "none",
+    [Parameter(Mandatory=$false)][string]$ScanTyoe
+)
+
+$PrequalVersion = "1.2"	# Added AV Scanning Option
 
 # Output banner and version
 Write-Output " ------ TheNetWorks Pre-Qualification Analysis Version $PrequalVersion ------- "
@@ -71,6 +77,19 @@ Write-Output ""
 Write-Output "--------- Check System Restore Configuration ---------"
 Get-ComputerRestorePoint
 Write-Output ""
+
+if($AvMode -ne "none"){
+  if($AvMode -eq "Quick") {
+    Write-Output "--------- Running Quick AV Scan (2-3 minutes) ---------" 
+    Start-MpScan -ScanType QuickScan
+  }
+  elseif($AvMode -eq "Full") {
+    Write-Output "--------- Running Full AV Scan (45-90 minutes) ---------" 
+    Start-MpScan -ScanType FullScan
+  }
+  Get-MpThreatDetection
+  Write-Output ""
+}
 
 # Lastly check the Event Log for recent Critical Errors
 Write-Output "--------- Check Windows Event Log ---------"
