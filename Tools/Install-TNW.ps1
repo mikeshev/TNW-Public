@@ -16,7 +16,11 @@ Invoke-WebRequest -Uri $FullUrl -UseBasicParsing -Outfile $ArchiveName
 
 # Extract the components from the Archive into this directory TheNetWorks
 tar xvf InstallTNW.zip
-del InstallTNW.zip
+tar xvf WifiInfoView.zip
 
 # Install the Redistributable package
 ./VC_redist.x86.exe /Q /Passive
+
+# Clean Up when done
+del InstallTNW.zip
+del WifiInfoView.zip
