@@ -1,6 +1,7 @@
-# Copyright 2022 TheNetWorks LLC 
-# Last Revision 4/25/22
-# Script to get a snapshot of the current versions on an updated machine
+# Script to get a snapshot of the current Windows Defender Statistics
+# on this PC and compare them with the Policy File
+# Copyright 2025 TheNetWorks LLC 
+# Last Revision 7/17/25
 
 function Remove-BomFromFile ($OldPath, $NewPath)
 {
@@ -11,10 +12,12 @@ function Remove-BomFromFile ($OldPath, $NewPath)
 
 # Execution starts here --------------------------------------------------
 
-$OrgFile = "\TheNetWorks\DefenderStatBOM.txt"
-$OutFile = "\TheNetWorks\DefenderStat.txt"
+$OrgFile     = "\TheNetWorks\DefenderStatBOM.txt"
+$StatsData   = "\TheNetWorks\DefenderStat.txt"
+$StatsPolicy = "\TheNetWorks\DefenderMon.cfg"
+$VerFile     = "\TheNetWorks\DefenderStat.cfg"
+
 $VerUrl="https://www.microsoft.com/en-us/wdsi/defenderupdates"
-$VerFile="\TheNetWorks\DefenderStat.cfg"
 
 # Get the web page and extract the version numbers
 $VerStr1=\windows\system32\curl -s $VerUrl | find '"Version: "'
@@ -28,9 +31,9 @@ $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 # Get the statistics and write to the file
 Get-MpComputerStatus | Out-File $OrgFile -Encoding UTF8
 
-Remove-BomFromFile -OldPath $OrgFile -NewPath $OutFile
+Remove-BomFromFile -OldPath $OrgFile -NewPath $StatsData
 
 del $OrgFile
 
 # Now that we have gathered the statistics Parse them for compliance
-/TheNetWorks/DefenderMon.exe $OutFile
+/TheNetWorks/DefenderMon.exe $StatsData $StatsPolicy
